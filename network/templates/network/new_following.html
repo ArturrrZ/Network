@@ -1,0 +1,24 @@
+{% extends 'network/new_layout.html' %}
+{% load static %}
+{% block title %}Following Page{% endblock %}
+{% block body %}
+
+<h1>Following posts</h1>
+    {% for post in posts %}
+      <div class="post">
+        <span class="username"><a href="{% url 'profile' post.user.id %}"><strong>{{post.user.username}}</strong></a></span> <span class="email">{{post.user.email}} on {{post.date}}</span>
+        <p>{{post.body}}</p>
+        <span class="likes">
+        {% if user not in post.likes.all %}
+        <img class="like" src="{% static 'network/images/suit-heart.svg' %}" alt="empty heart" data-post_id="{{post.id}}">
+        {% else %}
+        <img class="like" src="{% static 'network/images/suit-heart-fill.svg' %}" alt="filled heart" data-post_id="{{post.id}}">
+        {% endif %}
+        <span class="amount">{{post.likes.count}}</span>
+        </span>
+<!--        right side-->
+        <span class="comment">comment</span>
+    </div>
+      {% endfor %}
+
+{% endblock %}

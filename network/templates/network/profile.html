@@ -1,0 +1,49 @@
+{% extends 'network/new_layout.html' %}
+{% load static %}
+{% block title %}Following Page{% endblock %}
+{% block body %}
+ <h1>{{person.username}}'s Profile</h1>
+
+      <p>{{person.following.count}} <span class="text_grey">Following </span>{{person.followers.count}} <span class="text_grey">Followers</span></p>
+      <p class="text_grey">Joined {{person.date_joined|date:"F Y"}}</p>
+      {% if request.user.is_authenticated %}
+
+      {% if request.user != person %}
+      {% if follower %}
+      <p class="text_grey">You've been following since: {{follower.created|date:"M d Y"}}</p>
+      <a href="{% url 'follow' profile_id=person.id special_key=1 %}"><button >Unfollow</button></a>
+      {%else%}
+      <a href="{% url 'follow' profile_id=person.id special_key=2 %}"><button >Follow</button></a>
+      {% endif %}
+<!--      my own page-->
+      {% else %}
+      <h6>All your posts below:</h6>
+      {% endif %}
+      {% endif %}
+      <hr/>
+      {% for post in person.posts.all %}
+      <div class="post">
+        <span class="username"><a href="{% url 'profile' post.user.id %}"><strong>{{post.user.username}}</strong></a></span> <span class="email">{{post.user.email}} on {{post.date}}</span>
+        <p>{{post.body}}</p>
+        <span class="likes">
+        {% if user not in post.likes.all %}
+        <img class="like" src="{% static 'network/images/suit-heart.svg' %}" alt="empty heart" data-post_id="{{post.id}}">
+        {% else %}
+        <img class="like" src="{% static 'network/images/suit-heart-fill.svg' %}" alt="filled heart" data-post_id="{{post.id}}">
+        {% endif %}
+        <span class="amount">{{post.likes.count}}</span>
+
+        </span>
+        <span class="comment">comment</span>
+    </div>
+      {% endfor %}
+
+{% endblock %}
+
+{% block right-sidebar %}
+
+{% if request.user == person %}
+      {% include 'network/create_post_form.html' %}
+      {% endif %}
+
+  {% endblock %}
