@@ -8,15 +8,30 @@ from django.shortcuts import render
 from django.urls import reverse
 import datetime
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Post, UserFollowing
 
 
 def index(request):
+    posts=Post.objects.all().order_by("-date")
+    # print(posts)
+    paginator=Paginator(posts,10)
+    # for anchor tags
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    following=[]
+    # followings
+    if request.user.is_authenticated:
+        follow=request.user.following.all()
+        following=[old.following_user_id for old in follow]
+
+
     return render(request, "network/index.html", {
-        "posts": Post.objects.all().order_by("-date"),
+        "posts":posts ,
+        "page_obj":page_obj,
+        "following":following,
     })
 
 
@@ -124,6 +139,11 @@ def edit_post(request):
 
 def profile(request, profile_id):
     person = User.objects.get(pk=profile_id)
+    posts=person.posts.all()
+    paginator = Paginator(posts, 10)
+    # for anchor tags
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     follower = False
     if request.user.is_authenticated:
         try:
@@ -139,6 +159,7 @@ def profile(request, profile_id):
     return render(request, "network/profile.html", {
         "person": person,
         "follower": follower,
+        "page_obj":page_obj,
     })
 
 @login_required(login_url="login")
@@ -166,9 +187,13 @@ def follow(request,profile_id,special_key):
 def following(request):
     following = request.user.following.all()
     following_people = [each.following_user_id for each in following]
-    print(following_people)
+    # print(following_people)
     post_from_following=Post.objects.filter(user__in=following_people).order_by("-date")
-
+    paginator = Paginator(post_from_following, 10)
+    # for anchor tags
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request,"network/new_following.html", {
         "posts": post_from_following,
+        "page_obj":page_obj
     })

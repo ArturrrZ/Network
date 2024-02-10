@@ -21,7 +21,7 @@
       {% endif %}
       {% endif %}
       <hr/>
-      {% for post in person.posts.all %}
+      {% for post in page_obj %}
       <div class="post">
         <span class="username"><a href="{% url 'profile' post.user.id %}"><strong>{{post.user.username}}</strong></a></span> <span class="email">{{post.user.email}} on {{post.date}}</span>
         <p>{{post.body}}</p>
@@ -37,7 +37,21 @@
         <span class="comment">comment</span>
     </div>
       {% endfor %}
-
+    <ul class="pagination justify-content-center ">
+          {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">&laquo</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+            {% endif %}
+          <span class="current">
+                <li class="page-item active"><a class="page-link" href="#">{{ page_obj.number }}</a></li>
+            </span>
+          {% if page_obj.has_next %}
+                <li class="page-item"> <a class="page-link" href="?page={{ page_obj.next_page_number }}">{{page_obj.next_page_number}}</a></li>
+                <li class="page-item"> <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                <li class="page-item"> <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+            {% endif %}
+      </ul>
 {% endblock %}
 
 {% block right-sidebar %}
