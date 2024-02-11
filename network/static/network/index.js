@@ -20,9 +20,10 @@ function makeLike(element){
         console.log(data.amount_of_likes);
         if (isFilled) {
             // change to empty heart
-            element.src="static/network/images/suit-heart.svg"
+
+            element.src="/static/network/images/suit-heart.svg"
         }
-        else {element.src="static/network/images/suit-heart-fill.svg"}
+        else {element.src="/static/network/images/suit-heart-fill.svg"}
         element.nextElementSibling.innerHTML=data.amount_of_likes;
     })    
     
