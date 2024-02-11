@@ -7,7 +7,9 @@
     {% for post in page_obj %}
       <div class="post">
           <div class="profile_picture" style="float:left;">
-            <img src="{{post.user.profile_image}}"   class="profile_img_small" height="70px" alt="profile image">
+              <a href="{% url 'profile' post.user.id %}">
+                <img src="{{post.user.profile_image}}"   class="profile_img_small" height="70px" alt="profile image">
+              </a>
             </div>
         <span class="username"><a href="{% url 'profile' post.user.id %}"><strong>{{post.user.username}}</strong></a></span> <span class="email">{{post.user.email}} on {{post.date}}</span>
         <p>{{post.body}}</p>
