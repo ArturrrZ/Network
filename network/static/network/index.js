@@ -73,3 +73,57 @@ document.querySelectorAll(".edit_button").forEach(
         }
     }
 )
+
+document.querySelector(".edit_profile_img").onclick=function(event){
+    event.preventDefault();
+    let element=event.target;
+    let form=element.previousElementSibling;
+    form.style.display="block";
+}
+
+document.querySelectorAll(".edit_button_profile").forEach(
+    edit_button => {
+        edit_button.onclick = (event) => {console.log(event.target)
+            let main = event.target.parentElement;
+            let previous_text = main.querySelector("p").innerHTML;
+            let post = main.parentElement;
+            let form = document.createElement("form");
+            form.innerHTML = `<textarea name="edit" cols="88" rows="5">${previous_text}</textarea></br><button type="submit">Confirm</button>`;
+            post.appendChild(form);
+            main.style.display = "none";
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                editTextProfile(main, form, post.dataset.post_id);
+            });
+        }
+    }
+);
+
+function editTextProfile(main, form, post_id) {
+    let newText = form.querySelector("textarea").value;
+    fetch("/edit", {
+        method: "PUT",
+        body: JSON.stringify({
+            post_id: post_id,
+            new_body: newText,
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(`Status code:${response.status}\n${data.error}`);
+                });
+            }
+            return response.json()
+        })
+        .then(data => {
+            console.log(data.message);
+            main.style.display = "block";
+            main.querySelector("p").innerHTML = newText;
+            form.style.display = "none";
+        })
+        .catch(error => {
+            console.log(error.message)
+        })
+}
+

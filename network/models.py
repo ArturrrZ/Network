@@ -4,7 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     likes=models.ManyToManyField("Post",blank=True,null=True,related_name="likes")
-
+    profile_image=models.TextField(blank=True,null=True,default="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png")
     def __str__(self):
         return self.username
 

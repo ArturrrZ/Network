@@ -86,7 +86,7 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-
+@login_required(login_url="login")
 def create_post(request):
     if request.method == "POST":
         body = request.POST['body']
@@ -139,7 +139,7 @@ def edit_post(request):
 
 def profile(request, profile_id):
     person = User.objects.get(pk=profile_id)
-    posts=person.posts.all()
+    posts=person.posts.all().order_by('-date')
     paginator = Paginator(posts, 10)
     # for anchor tags
     page_number = request.GET.get('page')
@@ -161,6 +161,19 @@ def profile(request, profile_id):
         "follower": follower,
         "page_obj":page_obj,
     })
+@login_required(login_url='login')
+@csrf_exempt
+def edit_profile_img(request):
+    url=request.GET.get("url")
+    person=request.GET.get("person")
+    if str(request.user) == str(person):
+        user=User.objects.all().get(pk=request.user.id)
+        user.profile_image=url
+        user.save()
+        print("Done")
+    else:
+        print("Nope")
+    return HttpResponseRedirect(reverse("profile",args=(request.user.id,)))
 
 @login_required(login_url="login")
 def follow(request,profile_id,special_key):

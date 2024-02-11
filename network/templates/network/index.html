@@ -8,9 +8,12 @@
 
     {% for post in page_obj %}
     <div class="post" data-post_id="{{post.id}}">
+        <div class="profile_picture" style="float:left;">
+            <a href="{% url 'profile' post.user.id %}"><img src="{{post.user.profile_image}}"   class="profile_img_small" height="70px" alt="profile image"></a>
+            </div>
         <div class="main">
             {% if post.user in following %}
-            <span class="username"><a href="{% url 'profile' post.user.id %}" style="color:#11009E"><strong>{{post.user.username}}</strong></a></span>
+            <span class="username"><a href="{% url 'profile' post.user.id %}" style="color:blue"><strong>{{post.user.username}}</strong></a></span>
             {% else %}
             <span class="username"><a href="{% url 'profile' post.user.id %}"><strong>{{post.user.username}}</strong></a></span>
             {% endif %}
@@ -18,6 +21,8 @@
         {% if post.user == request.user %}
         <button class="edit_button btn btn-light" >edit post</button>
         {% endif %}
+            <br>
+
         <p>{{post.body}}</p>
         <span class="likes">
         {% if user not in post.likes.all %}
@@ -28,7 +33,7 @@
         <span class="amount">{{post.likes.count}}</span>
 
         </span>
-            <span class="comment">comment</span>
+
         </div>
         
 

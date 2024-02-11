@@ -3,7 +3,21 @@
 {% block title %}Following Page{% endblock %}
 {% block body %}
  <h1>{{person.username}}'s Profile</h1>
-
+<div class="profile_pic">
+      <img src="{{person.profile_image}}" class="profile_img" alt="profile picture" height="200px" width="200px">
+    {% if request.user == person %}
+    <br>
+    <div class="edit_profile_div">
+        <form action="{% url 'edit_profile_img' %}" style="display:none;">
+            <input type="text" placeholder="URl for picture:" name="url">
+            <input type="hidden" value="{{person}}" name="person">
+            <input type="submit">
+        </form>    
+    <a href="#" class="edit_profile_img"style="color:black">Edit Profile Image</a>
+    </div>    
+    {% endif %}
+</div>
+<br>
       <p>{{person.following.count}} <span class="text_grey">Following </span>{{person.followers.count}} <span class="text_grey">Followers</span></p>
       <p class="text_grey">Joined {{person.date_joined|date:"F Y"}}</p>
       {% if request.user.is_authenticated %}
@@ -22,10 +36,16 @@
       {% endif %}
       <hr/>
       {% for post in page_obj %}
-      <div class="post">
-        <span class="username"><a href="{% url 'profile' post.user.id %}"><strong>{{post.user.username}}</strong></a></span> <span class="email">{{post.user.email}} on {{post.date}}</span>
+      <div class="post" data-post_id="{{post.id}}">
+            <div class="main">
+        <span class="username"><a href="{% url 'profile' post.user.id %}"><strong>{{post.user.username}}</strong></a></span>
+          <span class="email">{{post.user.email}} on {{post.date}}</span>
+          {% if post.user == user%}
+
+          <button class="edit_button_profile btn btn-light" >edit post</button>
+          {% endif %}
         <p>{{post.body}}</p>
-        <span class="likes">
+        <span class="likes" style="margin-left:90%;">
         {% if user not in post.likes.all %}
         <img class="like" src="{% static 'network/images/suit-heart.svg' %}" alt="empty heart" data-post_id="{{post.id}}">
         {% else %}
@@ -33,10 +53,12 @@
         {% endif %}
         <span class="amount">{{post.likes.count}}</span>
 
-        </span>
-        <span class="comment">comment</span>
+        </span></div>
+<!--        <span class="comment">comment</span>-->
     </div>
       {% endfor %}
+
+
     <ul class="pagination justify-content-center ">
           {% if page_obj.has_previous %}
                 <li class="page-item"><a class="page-link" href="?page=1">&laquo</a></li>
