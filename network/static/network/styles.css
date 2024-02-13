@@ -118,4 +118,8 @@ textarea{
     margin-right:2%;
 }
 .likes{margin-left:80%;}
-
+.delete {
+    color:black;
+    font-size:12px;
+    margin-left:15%;
+}

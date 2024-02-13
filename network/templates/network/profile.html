@@ -43,6 +43,7 @@
           {% if post.user == user%}
 
           <button class="edit_button_profile btn btn-light" >edit post</button>
+          <a href="{% url 'delete' post.id %}" class="delete">delete post</a>
           {% endif %}
         <p>{{post.body}}</p>
         <span class="likes" style="margin-left:90%;">

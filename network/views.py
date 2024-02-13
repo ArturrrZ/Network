@@ -10,6 +10,7 @@ import datetime
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
+from django.core.exceptions import PermissionDenied
 
 from .models import User, Post, UserFollowing
 
@@ -136,6 +137,19 @@ def edit_post(request):
             return JsonResponse({"error": "You are not the author of this post. Go Away!"},status=403)
     except ObjectDoesNotExist:
         return JsonResponse({"error": f"Post with ID {post_id} does not exist."},status=404)
+@login_required(login_url="login")
+def delete(request,post_id):
+    try:
+        post=Post.objects.get(pk=post_id)
+    except ObjectDoesNotExist:
+        raise PermissionDenied()
+
+    if post.user==request.user:
+        post.delete()
+        return HttpResponseRedirect(reverse("profile",args=(request.user.id,)))
+    else:
+        raise PermissionDenied()
+
 
 def profile(request, profile_id):
     person = User.objects.get(pk=profile_id)

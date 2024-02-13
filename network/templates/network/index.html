@@ -20,6 +20,7 @@
         <span class="email">{{post.user.email}} on {{post.date}}</span>
         {% if post.user == request.user %}
         <button class="edit_button btn btn-light" >edit post</button>
+        <a href="{% url 'delete' post.id %}" class="delete">delete post</a>
         {% endif %}
             <br>
 
